@@ -124,6 +124,7 @@ AC_CONFIG_FILES([\
         src/tsung-plotter/tsplot.py \
         src/log2tsung.pl \
         src/tsung_controller/tsung_controller.app \
+        src/redbug/redbug.app \
         src/tsung_recorder/tsung_recorder.app \
         src/tsung/tsung.app \
         ])
