@@ -32,17 +32,19 @@
 
 
 start() ->
-    error_logger:tty(false),
     Redirect= << "<meta http-equiv=\"refresh\" content=\"0; url=/es/ts_web:logs\">\n" >>,
     ts_controller_sup:start_inets(?config(log_dir), Redirect).
 
 graph(SessionID, Env, Input) ->
+    logger:alert("graph/3~n", []),
     render(SessionID, Env, Input,"graph.html").
 
 report(SessionID, Env, Input) ->
+    logger:alert("report/3~n", []),
     render(SessionID, Env, Input,"report.html").
 
 render(SessionID, Env, Input, File) ->
+    logger:alert("render/3~n", []),
     Begin=?NOW,
     {Path, ViewOnly} = case application:get_env(tsung_controller,log_dir_real) of
             {ok,P} -> {P, false};
@@ -90,6 +92,7 @@ error(SessionID, Env, Input) ->
     error(SessionID, Env, Input, "").
 
 error(SessionID, _Env, _Input, Msg) ->
+    logger:alert("error/4~n", []),
     Title = "<title>Tsung Update Error</title>",
     Text  = "<div class=\"alert alert-danger \">
   <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\"></button>
@@ -107,6 +110,7 @@ error(SessionID, _Env, _Input, Msg) ->
                    ).
 
 script_paths()->
+    logger:alert("script_paths/0~n", []),
     Path = case application:get_env(tsung_controller,log_dir_real) of
                {ok,P} -> P;
                _      -> ?config(log_dir)
@@ -115,6 +119,7 @@ script_paths()->
     ts_utils:join(":",[UserPath,"/usr/lib64/tsung/bin/","/usr/lib/tsung/bin","/usr/local/lib/tsung/bin"]).
 
 update_reports() ->
+    logger:alert("update_reports/0~n", []),
     %% Referer = proplists:get_value(http_referer,Env),
     Path = case application:get_env(tsung_controller,log_dir_real) of
                {ok,P} -> P;
@@ -135,6 +140,7 @@ update_reports() ->
     end.
 
 update(SessionID, _Env, _Input) ->
+    logger:alert("update/3~n", []),
     Begin=?NOW,
     Title ="Tsung Update stats",
     update_reports(),
@@ -151,6 +157,7 @@ update(SessionID, _Env, _Input) ->
                                ]).
 
 stop(SessionID, _Env, _Input) ->
+    logger:alert("stop/3~n", []),
     Title ="Tsung Stop",
     mod_esi:deliver(SessionID, [
                                 "Content-Type: text/html\r\n\r\n",
@@ -162,6 +169,7 @@ stop(SessionID, _Env, _Input) ->
     slave:stop(node()).
 
 status(SessionID, _Env, _Input) ->
+    logger:alert("status/3~n", []),
     Title ="Tsung Status",
     {ok, Nodes, Ended_Beams, MaxPhases} = ts_config_server:status(),
     Active    = Nodes - Ended_Beams,
@@ -195,6 +203,7 @@ status(SessionID, _Env, _Input) ->
                                ]).
 
 logs(SessionID, _Env, _Input) ->
+    logger:alert("logs/3~n", []),
     Title ="Tsung Logs",
     RealPath = case application:get_env(tsung_controller,log_dir_real) of
                    {ok,Path} -> Path;
