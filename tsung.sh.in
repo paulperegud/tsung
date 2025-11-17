@@ -67,7 +67,7 @@ view() {
     -s ts_web \
     $EXTRA_LOAD_PATHS \
     -pa $TSUNGPATH -pa $CONTROLLERPATH \
-    -sasl sasl_error_logger false \
+    -sasl sasl_error_logger true \
     -stdlib template_path beam_relative \
     -stdlib $LOG_OPT
 }
