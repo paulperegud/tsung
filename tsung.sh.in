@@ -61,7 +61,7 @@ stop() {
 
 view() {
     echo "Starting Tsung web only on port 8091"
-    $ERL $ERL_OPTS $ERL_RSH -noshell $PROTO_DIST $NAMETYPE $CONTROLLER$CONTROLLER_EXTENDS -setcookie $COOKIE \
+    $ERL $ERL_OPTS $ERL_RSH $PROTO_DIST $NAMETYPE $CONTROLLER$CONTROLLER_EXTENDS -setcookie $COOKIE \
     +P $MAX_PROCESS \
     -kernel inet_dist_listen_min $ERL_DIST_PORTS_MIN -kernel inet_dist_listen_max $ERL_DIST_PORTS_MAX \
     -s ts_web \
