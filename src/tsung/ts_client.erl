@@ -302,6 +302,10 @@ handle_info2({gen_ts_transport, Socket, Data}, think,State=#state_rcv{
                        ?LOG("Bidi: no data ~n",?DEB),
                        ts_mon_cache:add({count, async_unknown_data_rcv}),
                        {Action, State2};
+                   {{sample, Value}, State2, Action} ->
+                       ?LOGF("Bidi: sample ~p~n", [Value], ?DEB),
+                       ts_mon_cache:add([{sample, async_data_timing_spread, Value}]),
+                       {Action, State2};
                    {Data2, State2, Action} ->
                        ts_mon_cache:add([{ sum, size_sent, size(Data2)},{count, async_data_sent}]),
                        ts_mon:sendmes({State#state_rcv.dump, self(), Data2}),

@@ -130,7 +130,7 @@ rcvmes({protocol, _, _})-> skip;
 rcvmes({protocol_local, _, _})-> skip;
 rcvmes({_, _, closed})  -> skip;
 rcvmes({_Type, Who, What})  ->
-    gen_server:cast({global, ?MODULE}, {rcvmsg, Who, ?TIMESTAMP, What}).
+    gcn_server:cast({global, ?MODULE}, {rcvmsg, Who, ?TIMESTAMP, What}).
 
 dump({none, _, _})-> skip;
 dump({cached, << >> })-> skip;

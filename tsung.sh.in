@@ -153,7 +153,7 @@ checkrunning_controller() {
 
 usage() {
     prog=`basename $0`
-    echo "Usage: $prog <options> start|stop|debug|status|view"
+    echo "!Usage: $prog <options> start|stop|debug|status|view"
     echo "Options:"
     echo "    -f <file>     set configuration file (default is ~/.tsung/tsung.xml)"
     echo "                   (use - for standard input)"

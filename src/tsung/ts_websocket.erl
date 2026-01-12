@@ -149,13 +149,36 @@ parse(Data, State=#state_rcv{acc = [], session = WebsocketSession})
     end;
 %% more data, add this to accumulator and parse, update datasize
 parse(Data, State=#state_rcv{acc = Acc, datasize = DataSize}) ->
-    NewSize= DataSize + size(Data),
+    NewSize= DataSize + byte_size(Data),
     parse(<< Acc/binary, Data/binary >>,
           State#state_rcv{acc = [], datasize = NewSize}).
 
 parse_bidi(Data, State) ->
-    ts_plugin:parse_bidi(Data, State).
-
+    case websocket:decode(Data) of 
+        {?OP_TEXT, MbJson, <<>>} ->
+            {struct, PL} = mochijson2:decode(MbJson),
+            case proplists:get_value(~"t", PL) of 
+                ~"msg" ->
+                    {struct, Msg} = proplists:get_value(~"data", PL),
+                    {struct, MsgData} = proplists:get_value(~"data", Msg),
+                    {struct, Attrs} = proplists:get_value(~"attributes", MsgData),
+                    case proplists:get_value(~"tns", Attrs) of
+                        undefined ->
+                            {nodata, State, think};
+                        TnsBin ->
+                            Tns = binary_to_integer(TnsBin),
+                            {MegaS, Sec, MicroSec} = os:timestamp(),
+                            NowNs = (((MegaS * 1000000) + Sec) * 1000000 + MicroSec) * 1000,
+                            DelayMilliSec = (NowNs - Tns) / 1000000,
+                            {{sample, DelayMilliSec}, State, think}
+                    end;
+                _ ->
+                    {nodata, State, think}
+            end;
+        _ ->
+            {nodata, State, think}
+    end.
+            
 %%----------------------------------------------------------------------
 %% Function: parse_config/2
 %% Purpose:  parse tags in the XML config file related to the protocol
